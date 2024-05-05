@@ -5,9 +5,12 @@
 #include <stdbool.h>
 #include <string.h>
 
-char mem[80];
+#define MEM_SIZE 80
+char mem[MEM_SIZE];
 
 bool read(const char * fileName);
+void showMem();
+bool firstFit(char process, int size);
 void allocate(char process, int size, char algorithm);
 int main();
 
