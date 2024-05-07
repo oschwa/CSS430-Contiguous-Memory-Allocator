@@ -13,7 +13,7 @@ On top of this, compaction is also supported for simulated memory.
 ## Build Instructions
 1. Clone this repository on your local machine.
 2. Run one of the following compilation commands in your terminal.
-- For GCC/GNU -> gcc -o memory-allocator.out memory.c
+- For GCC/GNU -> gcc -o memory-allocator.exe memory.c
 - For macOS -> clang -o memory-allocator.out memory.c
 
 3. You will be presented with this screen:
