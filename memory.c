@@ -34,9 +34,43 @@ bool firstFit(char process, int size) {
     return true;
 }
 
+bool worstFit(char process, int size) {
+    //  find the worst-size pocket.
+    int wA = -1; int wB = -1;
+    int a = -1; int b = -1;
+    for (int i = 0; i < MEM_SIZE; i++) {
+        if (mem[i] == '\0' && a == -1) { 
+            a = i; b = i;
+        } else if (mem[i] == '\0') {   
+            ++b;
+        } else {
+            if (b - a > wB - wA) {
+                wA = a;
+                wB = b;
+            } else { a = -1; b = -1; }
+        }
+    }
+    if (wA == -1 && wB == -1) {
+        wA = a;
+        wB = b;
+    }
+    //  determine if there is space.
+    if (wB - wA < size) { return false; }
+    //  allocate to available memory.
+    wB = wA + (size - 1);
+    for (int i = wA; i <= wB; i++) {
+        mem[i] = process;
+    }
+    return true;
+}
+
 void allocate(char process, int size, char algorithm) {
     if (algorithm == 'F') { 
         if (!firstFit(process, size)) {
+            printf("    ERROR: Memory does not have sufficient space\n     - Please deallocate a process to allocate %c.\n", process);
+        }
+    } else if (algorithm == 'W') {
+        if (!worstFit(process, size)) {
             printf("    ERROR: Memory does not have sufficient space\n     - Please deallocate a process to allocate %c.\n", process);
         }
     }
