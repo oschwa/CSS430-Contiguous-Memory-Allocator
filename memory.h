@@ -14,7 +14,7 @@
 #include <string.h>
 
 #define MEM_SIZE 80
-#define MAX_LINE 9
+#define MAX_LINE 12
 char mem[MEM_SIZE];
 
 //  Read a .txt file containing a script for the program.

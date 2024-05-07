@@ -74,10 +74,11 @@ bool worstFit(char process, int size) {
             } else { a = -1; b = -1; }
         }
     }
-    if (wA == -1 && wB == -1) {
+
+    if ((wA == -1 && wB == -1) || b - a > wB - wA) {
         wA = a;
         wB = b;
-    }
+    } 
     //  determine if there is space.
     if (wB - wA < (size - 1)) { return false; }
     //  allocate to available memory.
@@ -163,29 +164,36 @@ void read(const char * fileName) {
     char line[MAX_LINE];
     while(fgets(line, MAX_LINE, f)) {
         char cmd;
-        if (fscanf(f, "%c", &cmd) == 0) {
-            printf("    ERROR: Could not read file\n");
-            return;
-        }
+        cmd = line[0];
         if (cmd == 'A') {
-            char process, algorithm;
-            int size;
-            fscanf(f, " %c %d %c", &process, &size, &algorithm);
+            int i = 1;
+            while (line[i] == ' ') {++i;}
+            char process = line[i++];
+
+            while (line[i] == ' ') {++i;}
+            char n[3] = {'\0'};
+            int j = 0;
+            while (line[i] != ' ') {
+                n[j++] = line[i++];
+            }
+            int size = atoi(n);
+            while (line[i] == ' ') {++i;}
+            char algorithm = line[i];
+
             allocate(process, size, algorithm);
         } else if (cmd == 'F') {
-            char process;
-            fscanf(f, " %c", &process);
+            int i = 1;
+            while (line[i] == ' ') {++i;}
+            char process = line[i];
             deallocate(process);
         } else if (cmd == 'C') {
             compact();
         } else if (cmd == 'S') {
             showMem();
         } else if (cmd == 'E') {
-            printf("    Exiting file read...\n");
             return;
-        }
-    }
-
+        } 
+    }   
     fclose(f);
 }
 
