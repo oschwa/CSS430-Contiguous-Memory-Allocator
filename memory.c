@@ -25,7 +25,7 @@ bool firstFit(char process, int size) {
         }
     }
     //  determine if there is space.
-    if (b - a < size) { return false; }
+    if (b - a < (size - 1)) { return false; }
     //  allocate to available memory.
     b = a + (size - 1);
     for (int i = a; i <= b; i++) {
@@ -55,13 +55,26 @@ bool worstFit(char process, int size) {
         wB = b;
     }
     //  determine if there is space.
-    if (wB - wA < size) { return false; }
+    if (wB - wA < (size - 1)) { return false; }
     //  allocate to available memory.
     wB = wA + (size - 1);
     for (int i = wA; i <= wB; i++) {
         mem[i] = process;
     }
     return true;
+}
+
+void deallocate(char process) {
+    bool exists = false;
+    for (int i = 0; i < MEM_SIZE; i++) {
+        if (mem[i] == process) {
+            exists = true;
+            mem[i] = '\0';
+        }
+    }
+    if (!exists) {
+        printf("    ERROR: Process %c does not exist in memory.\n", process);
+    }
 }
 
 void allocate(char process, int size, char algorithm) {
@@ -94,6 +107,10 @@ int main() {
             int size;
             scanf(" %c %d %c", &process, &size, &algorithm);
             allocate(process, size, algorithm);
+        } else if (cmd == 'F') {
+            char process;
+            scanf(" %c", &process);
+            deallocate(process);
         } else if (cmd == 'S') {
             showMem();
         } else if (cmd == 'R') {
