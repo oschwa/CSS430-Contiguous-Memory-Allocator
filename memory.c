@@ -1,3 +1,10 @@
+/**
+ * Author: Oliver Schwab
+ * Professor: Faisal Ahmed
+ * Class: CSS430 Spring 2024
+ * Description: Implementation file for 
+ * "memory.h" interface.
+*/
 #include "memory.h"
 
 void showMem() {
@@ -140,17 +147,51 @@ void allocate(char process, int size, char algorithm) {
         if (!bestFit(process, size)) {
             printf("    ERROR: Memory does not have sufficient space\n     - Please deallocate a process to allocate %c.\n", process);
         }
+    } else {
+        printf("    ERROR: Algorithm %c is not an option for memory allocation - Please choose from the following:\n", algorithm);
+        printf("    F -> First-Fit\n    B -> Best-Fit\n    W -> Worst-Fit\n");
     }
 }
 
-bool read(const char * fileName) {
-    //  TODO: Implement later.
-    return false;
+void read(const char * fileName) {
+    FILE *f = fopen(fileName, "r");
+    if (!f) {
+        printf("    ERROR: File failed to open successfully.\n");
+        fclose(f);
+        return;
+    }
+    char line[MAX_LINE];
+    while(fgets(line, MAX_LINE, f)) {
+        char cmd;
+        if (fscanf(f, "%c", &cmd) == 0) {
+            printf("    ERROR: Could not read file\n");
+            return;
+        }
+        if (cmd == 'A') {
+            char process, algorithm;
+            int size;
+            fscanf(f, " %c %d %c", &process, &size, &algorithm);
+            allocate(process, size, algorithm);
+        } else if (cmd == 'F') {
+            char process;
+            fscanf(f, " %c", &process);
+            deallocate(process);
+        } else if (cmd == 'C') {
+            compact();
+        } else if (cmd == 'S') {
+            showMem();
+        } else if (cmd == 'E') {
+            printf("    Exiting file read...\n");
+            return;
+        }
+    }
+
+    fclose(f);
 }
 
 int main() {
     printf("-----Welcome to the Contiguous Memory Allocator-----\n\n");
-    char line[50];
+    char line[MAX_LINE];
     char cmd;
 
     while (true) {
@@ -174,7 +215,7 @@ int main() {
             read(line);
         } else if (cmd == 'E') {
             printf("Exiting the Contiguous Memory Allocator...\n");
-            return 0;
+            exit(0);
         } else {
             printf("    ERROR: Invalid input - try again.\n");
             fflush(stdout);
